@@ -1,12 +1,3 @@
-/// <summary>
-/// Форма авторизации пользователя для оконного приложения Windows Forms.
-/// </summary>
-/// <remarks>
-/// Использует <see cref="AuthLibrary.AuthManager"/> для проверки
-/// учётных данных. После успешного входа закрывается с
-/// <see cref="System.Windows.Forms.DialogResult.OK"/>.
-/// </remarks>
-
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -14,203 +5,162 @@ using AuthLibrary;
 
 namespace MenuDemo
 {
-    /// <summary>
-    /// Диалоговое окно авторизации пользователя.
-    /// </summary>
     public sealed class LoginForm : Form
     {
-        // ----------------------------------------------------------------
-        // Элементы управления
-        // ----------------------------------------------------------------
-
-        private readonly Label _lblTitle;
-        private readonly Label _lblUsername;
-        private readonly Label _lblPassword;
-        private readonly Label _lblVersion;
-        private readonly TextBox _txtUsername;
-        private readonly TextBox _txtPassword;
-        private readonly Button _btnLogin;
-        private readonly Button _btnCancel;
-        private readonly PictureBox _picIcon;
-
-        // ----------------------------------------------------------------
-        // Поля
-        // ----------------------------------------------------------------
-
-        /// <summary>Менеджер авторизации, переданный извне.</summary>
         private readonly AuthManager _authManager;
+        private TextBox txtUser;
+        private TextBox txtPass;
+        private ToolStripStatusLabel tsCaps;
+        private ToolStripStatusLabel tsLang;
 
-        // ----------------------------------------------------------------
-        // Конструктор
-        // ----------------------------------------------------------------
-
-        /// <summary>
-        /// Инициализирует форму авторизации.
-        /// </summary>
-        /// <param name="authManager">
-        /// Экземпляр <see cref="AuthManager"/> для проверки учётных данных.
-        /// </param>
-        /// <param name="appVersion">
-        /// Строка версии приложения, отображаемая в окне.
-        /// </param>
-        public LoginForm(AuthManager authManager, string appVersion = "1.0.0")
+        public LoginForm(AuthManager authManager, string version)
         {
-            _authManager = authManager
-                ?? throw new ArgumentNullException(nameof(authManager));
+            _authManager = authManager;
 
-            // ---- Настройка формы ----
-            Text = "Авторизация";
-            FormBorderStyle = FormBorderStyle.FixedDialog;
+            // ─── НАСТРОЙКИ ФОРМЫ ──────────────────────────────────────
+            Text = "Вход";
+            Size = new Size(390, 250);
             StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            Size = new Size(340, 240);
-            BackColor = Color.White;
+            Font = new Font("Microsoft Sans Serif", 8.25F);
+            BackColor = Color.FromArgb(185, 209, 234); // Тот самый синий фон
+            Icon = SystemIcons.Application;
 
-            // ---- Заголовок ----
-            _lblTitle = new Label
+            // ─── ВЕРХНЯЯ ПАНЕЛЬ ───────────────────────────────────────
+            var pnlHeader = new Panel
             {
-                Text = "Вход в систему",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(30, 80, 160),
-                AutoSize = true,
-                Location = new Point(20, 16)
+                Dock = DockStyle.Top,
+                Height = 65,
+                BackColor = Color.Transparent
             };
 
-            // ---- Версия ----
-            _lblVersion = new Label
+            var pbIcon = new PictureBox
             {
-                Text = $"Версия {appVersion}",
-                Font = new Font("Segoe UI", 8F),
-                ForeColor = Color.Gray,
-                AutoSize = true,
-                Location = new Point(20, 44)
+                Dock = DockStyle.Left,
+                Width = 70,
+                SizeMode = PictureBoxSizeMode.CenterImage,
+                BackColor = Color.Transparent,
+                Image = global::DDProgram.Properties.Resources.KeysIcon // Раскомментируйте и добавьте иконку
             };
 
-            // ---- Метка «Пользователь» ----
-            _lblUsername = new Label
+            var pnlStripes = new Panel
             {
-                Text = "Пользователь:",
-                AutoSize = true,
-                Location = new Point(20, 76),
-                Font = new Font("Segoe UI", 9F)
+                Dock = DockStyle.Fill,
+                BackColor = Color.Transparent
             };
 
-            // ---- Поле ввода логина ----
-            _txtUsername = new TextBox
+            var lblApp = new Label
             {
-                Location = new Point(140, 72),
-                Width = 160,
-                Font = new Font("Segoe UI", 9F)
+                Text = "АИС Отдел кадров",
+                Dock = DockStyle.Top,
+                Height = 22,
+                BackColor = Color.FromArgb(255, 253, 215),
+                TextAlign = ContentAlignment.MiddleRight,
+                Padding = new Padding(0, 0, 10, 0)
             };
 
-            // ---- Метка «Пароль» ----
-            _lblPassword = new Label
+            var lblVersion = new Label
             {
-                Text = "Пароль:",
-                AutoSize = true,
-                Location = new Point(20, 108),
-                Font = new Font("Segoe UI", 9F)
+                Text = "Версия " + (version ?? "1.0.0.0"),
+                Dock = DockStyle.Top,
+                Height = 21,
+                BackColor = Color.Gold,
+                TextAlign = ContentAlignment.MiddleRight,
+                Padding = new Padding(0, 0, 10, 0)
             };
 
-            // ---- Поле ввода пароля ----
-            _txtPassword = new TextBox
+            var lblHint = new Label
             {
-                Location = new Point(140, 104),
-                Width = 160,
-                PasswordChar = '●',
-                Font = new Font("Segoe UI", 9F)
+                Text = "Введите имя пользователя и пароль",
+                Dock = DockStyle.Top,
+                Height = 22,
+                BackColor = Color.White,
+                TextAlign = ContentAlignment.MiddleRight,
+                Padding = new Padding(0, 0, 10, 0)
             };
 
-            // ---- Кнопка «Войти» ----
-            _btnLogin = new Button
-            {
-                Text = "Войти",
-                Location = new Point(140, 144),
-                Width = 75,
-                Height = 28,
-                BackColor = Color.FromArgb(30, 80, 160),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F)
-            };
-            _btnLogin.FlatAppearance.BorderSize = 0;
-            _btnLogin.Click += BtnLogin_Click;
+            pnlStripes.Controls.Add(lblHint);
+            pnlStripes.Controls.Add(lblVersion);
+            pnlStripes.Controls.Add(lblApp);
+            pnlHeader.Controls.Add(pnlStripes);
+            pnlHeader.Controls.Add(pbIcon);
 
-            // ---- Кнопка «Отмена» ----
-            _btnCancel = new Button
-            {
-                Text = "Отмена",
-                Location = new Point(224, 144),
-                Width = 76,
-                Height = 28,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F),
-                DialogResult = DialogResult.Cancel
-            };
+            // ─── ПОЛЯ ВВОДА (ПУСТЫЕ) ──────────────────────────────────
+            var lblUser = new Label { Text = "Имя пользователя", Location = new Point(15, 85), AutoSize = true, BackColor = Color.Transparent };
+            txtUser = new TextBox { Location = new Point(130, 82), Width = 230, Text = "" };
 
-            // ---- Значок (заглушка — системная иконка «информация») ----
-            _picIcon = new PictureBox
+            var lblPass = new Label { Text = "Пароль", Location = new Point(15, 115), AutoSize = true, BackColor = Color.Transparent };
+            txtPass = new TextBox { Location = new Point(130, 112), Width = 230, UseSystemPasswordChar = true, Text = "" };
+
+            // ─── КНОПКИ ──────────────────────────────────────────────
+            var btnLogin = new Button { Text = "Вход", Location = new Point(35, 150), Size = new Size(80, 24), UseVisualStyleBackColor = true };
+            var btnCancel = new Button { Text = "Отмена", Location = new Point(260, 150), Size = new Size(80, 24), UseVisualStyleBackColor = true, DialogResult = DialogResult.Cancel };
+
+            // ─── STATUS BAR ──────────────────────────────────────────
+            var statusStrip = new StatusStrip { BackColor = Color.Transparent, SizingGrip = false };
+
+            tsLang = new ToolStripStatusLabel
             {
-                Image = SystemIcons.Shield.ToBitmap(),
-                SizeMode = PictureBoxSizeMode.StretchImage,
-                Size = new Size(32, 32),
-                Location = new Point(290, 10)
+                BorderSides = ToolStripStatusLabelBorderSides.Right,
+                BorderStyle = Border3DStyle.Etched, // Создает ту самую белую линию-разделитель
+                Padding = new Padding(0, 0, 5, 0)
             };
 
-            // ---- Enter / Escape ----
-            AcceptButton = _btnLogin;
-            CancelButton = _btnCancel;
+            tsCaps = new ToolStripStatusLabel { Spring = true, TextAlign = ContentAlignment.MiddleRight };
 
-            // ---- Добавление элементов ----
-            Controls.AddRange(new Control[]
-            {
-                _lblTitle, _lblVersion,
-                _lblUsername, _txtUsername,
-                _lblPassword, _txtPassword,
-                _btnLogin, _btnCancel,
-                _picIcon
-            });
+            statusStrip.Items.Add(tsLang);
+            statusStrip.Items.Add(tsCaps);
+
+            Controls.AddRange(new Control[] { lblUser, txtUser, lblPass, txtPass, btnLogin, btnCancel, pnlHeader, statusStrip });
+
+            // ─── ЛОГИКА ОБНОВЛЕНИЯ ЯЗЫКА И КЛАВИШ ─────────────────────
+
+            // 1. Обновление при загрузке
+            UpdateLanguageLabel();
+            UpdateCapsLockLabel();
+
+            // 2. Отслеживание смены языка системы
+            InputLanguageChanged += (s, e) => UpdateLanguageLabel();
+
+            // 3. Отслеживание CapsLock
+            KeyPreview = true;
+            KeyDown += (s, e) => UpdateCapsLockLabel();
+
+            AcceptButton = btnLogin;
+            CancelButton = btnCancel;
+            btnLogin.Click += BtnLogin_Click;
+            Shown += (s, e) => txtUser.Focus();
         }
 
-        // ----------------------------------------------------------------
-        // Обработчики событий
-        // ----------------------------------------------------------------
-
-        /// <summary>
-        /// Обрабатывает нажатие кнопки «Войти».
-        /// </summary>
-        private void BtnLogin_Click(object? sender, EventArgs e)
+        private void UpdateLanguageLabel()
         {
-            string username = _txtUsername.Text.Trim();
-            string password = _txtPassword.Text;
+            // Получаем название текущего языка (например, "Русский" или "English")
+            string lang = InputLanguage.CurrentInputLanguage.Culture.Parent.EnglishName;
+            if (lang.Contains("Russian")) lang = "Русский";
+            else if (lang.Contains("English")) lang = "Английский";
 
-            if (string.IsNullOrEmpty(username))
-            {
-                MessageBox.Show(
-                    "Введите имя пользователя.",
-                    "Ошибка ввода",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                _txtUsername.Focus();
-                return;
-            }
+            tsLang.Text = $"Язык ввода {lang}";
+        }
 
-            if (_authManager.Login(username, password))
+        private void UpdateCapsLockLabel()
+        {
+            tsCaps.Text = Control.IsKeyLocked(Keys.CapsLock) ? "Клавиша CapsLock нажата" : "";
+        }
+
+        private void BtnLogin_Click(object sender, EventArgs e)
+        {
+            if (_authManager.Login(txtUser.Text, txtPass.Text))
             {
                 DialogResult = DialogResult.OK;
                 Close();
             }
             else
             {
-                MessageBox.Show(
-                    "Неверное имя пользователя или пароль.",
-                    "Ошибка авторизации",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-
-                _txtPassword.Clear();
-                _txtPassword.Focus();
+                MessageBox.Show("Неверное имя пользователя или пароль.", "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtUser.Focus();
+                txtUser.SelectAll();
             }
         }
     }
