@@ -15,7 +15,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Reflection;
 
-namespace MenuLibrary
+namespace MenuDemo.Classes
 {
     /// <summary>
     /// Строитель меню: читает описание меню из текстового файла
