@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!-- Целевая платформа: Windows Forms требует суффикса -windows -->
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<OutputType>WinExe</OutputType>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<RootNamespace>MenuDemo</RootNamespace>
+		<AssemblyName>MenuDemo</AssemblyName>
+	</PropertyGroup>
+
+	<!-- Файл меню копируется в выходной каталог автоматически -->
+	<ItemGroup>
+		<Content Include="menu.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>
