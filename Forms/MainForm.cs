@@ -45,11 +45,7 @@ namespace MenuDemo.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Ошибка загрузки файла пользователей:\n{ex.Message}",
-                    "Ошибка",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка загрузки файла пользователей:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
                 return; // успокаиваем анализатор null-ссылок
             }
@@ -141,11 +137,8 @@ namespace MenuDemo.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Ошибка загрузки меню:\n{ex.Message}",
-                    "Ошибка",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка загрузки меню:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
             }
         }
 
@@ -162,11 +155,7 @@ namespace MenuDemo.Forms
         /// </summary>
         private static void ShowHandler(string handlerName)
         {
-            MessageBox.Show(
-                $"Вызван обработчик: {handlerName}",
-                "Обработчик пункта меню",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MessageBox.Show($"Вызван обработчик: {handlerName}", "Обработчик пункта меню", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
