@@ -1,4 +1,4 @@
-﻿namespace MenuDemo
+﻿namespace MenuDemo.Forms
 {
     partial class MainForm
     {
@@ -29,16 +29,24 @@
         private void InitializeComponent()
         {
             menuStrip1 = new System.Windows.Forms.MenuStrip();
+            menuStrip2 = new System.Windows.Forms.MenuStrip();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Location = new System.Drawing.Point(0, 0);
+            menuStrip1.Location = new System.Drawing.Point(0, 24);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new System.Drawing.Size(800, 24);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
-            menuStrip1.ItemClicked += menuStrip1_ItemClicked;
+            // 
+            // menuStrip2
+            // 
+            menuStrip2.Location = new System.Drawing.Point(0, 0);
+            menuStrip2.Name = "menuStrip2";
+            menuStrip2.Size = new System.Drawing.Size(800, 24);
+            menuStrip2.TabIndex = 1;
+            menuStrip2.Text = "menuStrip2";
             // 
             // MainForm
             // 
@@ -46,6 +54,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(800, 450);
             Controls.Add(menuStrip1);
+            Controls.Add(menuStrip2);
             MainMenuStrip = menuStrip1;
             Name = "MainForm";
             Text = "MainForm";
@@ -56,5 +65,6 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip menuStrip2;
     }
 }

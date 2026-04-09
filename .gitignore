@@ -1,4 +1,8 @@
 ﻿.vs/
 obj/
-bin/
 *.user
+bin/Debug/net8.0-windows/MenuDemo.deps.json
+bin/Debug/net8.0-windows/MenuDemo.dll
+bin/Debug/net8.0-windows/MenuDemo.exe
+bin/Debug/net8.0-windows/MenuDemo.pdb
+bin/Debug/net8.0-windows/MenuDemo.runtimeconfig.json

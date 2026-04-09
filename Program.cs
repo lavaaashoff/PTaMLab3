@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace MenuDemo
+namespace MenuDemo.Forms
 {
     internal static class Program
     {
