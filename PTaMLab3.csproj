@@ -11,6 +11,15 @@
 		<AssemblyName>DDProgram</AssemblyName>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Reference Include="AuthLibrary">
+	    <HintPath>.\AuthLibrary.dll</HintPath>
+	  </Reference>
+	  <Reference Include="MenuLibrary">
+	    <HintPath>.\MenuLibrary.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 	<!-- Файл меню копируется в выходной каталог автоматически -->
 
 </Project>

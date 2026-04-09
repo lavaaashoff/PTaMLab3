@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="../AuthLibrary/AuthLibrary.csproj" Id="b4493a48-32d4-4df3-9dc8-6754b6b7e406" />
+  <Project Path="../MenuLibrary/MenuLibrary.csproj" Id="755750a0-235f-4a84-827e-a3ae14613e00" />
   <Project Path="PTaMLab3.csproj" />
 </Solution>

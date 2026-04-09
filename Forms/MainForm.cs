@@ -9,7 +9,7 @@
 /// </remarks>
 
 using AuthLibrary;
-using MenuDemo.Classes;
+using MenuLibrary;
 using System;
 using System.Windows.Forms;
 
