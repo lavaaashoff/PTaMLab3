@@ -1,7 +1,8 @@
-﻿using System;
+﻿using MenuDemo.Forms;
+using System;
 using System.Windows.Forms;
 
-namespace MenuDemo.Forms
+namespace MenuDemo
 {
     internal static class Program
     {
@@ -10,7 +11,7 @@ namespace MenuDemo.Forms
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new MainFormDynamic());
         }
     }
 }

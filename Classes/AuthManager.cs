@@ -1,4 +1,4 @@
-/// <summary>
+/*/// <summary>
 /// Библиотека классов для авторизации пользователей и управления
 /// доступом к пунктам меню на основе данных из внешнего файла USERS.
 /// </summary>
@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace AuthLibrary
+namespace AuthLibraryClass
 {
     /// <summary>
     /// Перечисление возможных статусов видимости пункта меню для пользователя.
@@ -329,3 +329,4 @@ namespace AuthLibrary
         }
     }
 }
+*/

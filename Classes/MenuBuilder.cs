@@ -1,4 +1,4 @@
-﻿/// <summary>
+﻿/*/// <summary>
 /// Библиотека классов для построения меню оконного приложения
 /// на основе данных из внешнего текстового файла.
 /// </summary>
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace MenuLibrary
+namespace MenuLibraryClass
 {
     /// <summary>
     /// Строитель меню: читает описание меню из текстового файла
@@ -285,4 +285,4 @@ namespace MenuLibrary
             }
         }
     }
-}
+}*/
