@@ -187,7 +187,7 @@
             this.ClientSize = new System.Drawing.Size(390, 250);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = System.Drawing.SystemIcons.Application;
+            this.Icon = System.Drawing.Icon.FromHandle(global::DDProgram.Properties.Resources.icon.GetHicon());
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "LoginForm";

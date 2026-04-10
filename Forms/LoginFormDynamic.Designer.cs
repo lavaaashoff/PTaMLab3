@@ -147,6 +147,7 @@
             this.txtPass.Width = 230;
 
             // btnLogin
+            this.btnLogin.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnLogin.Location = new System.Drawing.Point(35, 150);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(80, 24);
@@ -155,6 +156,7 @@
             this.btnLogin.Click += new System.EventHandler(this.BtnLogin_Click);
 
             // btnCancel
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(260, 150);
             this.btnCancel.Name = "btnCancel";
@@ -187,7 +189,7 @@
             this.ClientSize = new System.Drawing.Size(390, 250);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = System.Drawing.SystemIcons.Application;
+            this.Icon = System.Drawing.Icon.FromHandle(global::DDProgram.Properties.Resources.icon.GetHicon());
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "LoginFormDynamic";

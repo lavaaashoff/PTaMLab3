@@ -12,6 +12,8 @@ using AuthLibrary;
 using MenuLibrary;
 using System;
 using System.Windows.Forms;
+using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace MenuDemo.Forms
 {
@@ -55,6 +57,21 @@ namespace MenuDemo.Forms
             
             LoadMenu(); // Строим меню и применяем права.
             UpdateTitle();
+
+            // Ресурс — Bitmap (png). Конвертируем в Icon безопасно через HICON.
+            var bmpIcon = global::DDProgram.Properties.Resources.icon;
+            if (bmpIcon != null)
+            {
+                IntPtr hIcon = bmpIcon.GetHicon();
+                try
+                {
+                    Icon = (Icon)Icon.FromHandle(hIcon).Clone();
+                }
+                finally
+                {
+                    DestroyIcon(hIcon);
+                }
+            }
         }
 
         /// <summary>
@@ -166,5 +183,8 @@ namespace MenuDemo.Forms
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
         }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool DestroyIcon(IntPtr handle);
     }
 }

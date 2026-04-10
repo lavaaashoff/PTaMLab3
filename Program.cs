@@ -11,7 +11,7 @@ namespace MenuDemo
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainFormDynamic());
+            Application.Run(new MainForm());
         }
     }
 }
