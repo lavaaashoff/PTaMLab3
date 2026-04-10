@@ -49,7 +49,6 @@ namespace MenuDemo.Forms
             
             if (!ShowLoginDialog()) // Показываем форму авторизации до появления главного окна.
             {
-                
                 Load += (s, e) => Close(); // Пользователь нажал «Отмена» — закрываем приложение.
                 return;
             }
@@ -134,11 +133,7 @@ namespace MenuDemo.Forms
         private bool ShowLoginDialog()
         {
             
-            string version = System.Reflection.Assembly // Получаем версию из атрибутов сборки.
-                .GetExecutingAssembly()
-                .GetName()
-                .Version?
-                .ToString(3) ?? "1.0.0";
+            string version = System.Reflection.Assembly .GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0"; // Получаем версию из атрибутов сборки.
 
             using var loginForm = new LoginForm(_authManager, version);
             return loginForm.ShowDialog() == DialogResult.OK;
@@ -154,7 +149,6 @@ namespace MenuDemo.Forms
                 var builder = new MenuBuilder("menu.txt", this);
                 builder.BuildMenu(menuStrip1);
 
-                
                 _authManager.ApplyPermissions(menuStrip1.Items); // Применяем права пользователя ко всем пунктам меню.
             }
             catch (Exception ex)
@@ -169,7 +163,7 @@ namespace MenuDemo.Forms
         /// </summary>
         private void UpdateTitle()
         {
-            Text = $"MenuDemo — {_authManager.CurrentUsername}";
+            Text = $"АИС Отдел Кадров ({_authManager.CurrentUsername})";
         }
 
         /// <summary>
