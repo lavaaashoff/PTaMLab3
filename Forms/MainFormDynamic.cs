@@ -18,18 +18,18 @@ namespace MenuDemo
 
             try
             {
-                // Загружаем DLL
-                Assembly authAsm = Assembly.LoadFrom("AuthLibrary.dll");
+                
+                Assembly authAsm = Assembly.LoadFrom("AuthLibrary.dll"); // Загружаем DLL.
                 Assembly menuAsm = Assembly.LoadFrom("MenuLibrary.dll");
 
                 _authType = authAsm.GetType("AuthLibrary.AuthManager");
                 _menuType = menuAsm.GetType("MenuLibrary.MenuBuilder");
 
-                // Создаём объекты
-                _auth = Activator.CreateInstance(_authType, "users.txt");
+                
+                _auth = Activator.CreateInstance(_authType, "users.txt"); // Создаём объекты.
 
-                // Показываем форму логина
-                var loginForm = new LoginFormDynamic(_auth, _authType, "1.0");
+                
+                var loginForm = new LoginFormDynamic(_auth, _authType, "1.0"); // Показываем форму логина.
 
                 if (loginForm.ShowDialog() != DialogResult.OK)
                 {
@@ -37,14 +37,14 @@ namespace MenuDemo
                     return;
                 }
 
-                // Создаём меню
-                _menuBuilder = Activator.CreateInstance(_menuType, "menu.txt", this);
+                
+                _menuBuilder = Activator.CreateInstance(_menuType, "menu.txt", this); // Создаём меню.
 
                 MethodInfo buildMenu = _menuType.GetMethod("BuildMenu");
                 buildMenu.Invoke(_menuBuilder, new object[] { menuStrip1 });
 
-                // Применяем права
-                MethodInfo apply = _authType.GetMethod("ApplyPermissions");
+                
+                MethodInfo apply = _authType.GetMethod("ApplyPermissions"); // Применяем права.
                 apply.Invoke(_auth, new object[] { menuStrip1.Items });
             }
             catch (Exception ex)

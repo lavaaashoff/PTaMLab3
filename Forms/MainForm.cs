@@ -20,87 +20,92 @@ namespace MenuDemo.Forms
     /// </summary>
     public partial class MainForm : Form
     {
-        // ----------------------------------------------------------------
-        // Поля
-        // ----------------------------------------------------------------
-
-        /// <summary>Менеджер авторизации (загружается один раз).</summary>
+        /// <summary>
+        /// Менеджер авторизации (загружается один раз).
+        /// </summary>
         private readonly AuthManager _authManager;
-
-        // ----------------------------------------------------------------
-        // Конструктор
-        // ----------------------------------------------------------------
 
         /// <summary>
         /// Инициализирует главную форму и запускает авторизацию.
         /// </summary>
         public MainForm()
         {
-            InitializeComponent(); // вызов из Designer.cs
+            InitializeComponent();
 
-            // Загружаем менеджер авторизации.
+
             try
             {
-                _authManager = new AuthManager("users.txt");
+                _authManager = new AuthManager("users.txt"); // Загружаем менеджер авторизации.
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка загрузки файла пользователей:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
-                return; // успокаиваем анализатор null-ссылок
-            }
-
-            // Показываем форму авторизации до появления главного окна.
-            if (!ShowLoginDialog())
-            {
-                // Пользователь нажал «Отмена» — закрываем приложение.
-                // Load ещё не вызван, поэтому используем отложенное закрытие.
-                Load += (s, e) => Close();
                 return;
             }
 
-            // Строим меню и применяем права.
-            LoadMenu();
+            
+            if (!ShowLoginDialog()) // Показываем форму авторизации до появления главного окна.
+            {
+                
+                Load += (s, e) => Close(); // Пользователь нажал «Отмена» — закрываем приложение.
+                return;
+            }
+
+            
+            LoadMenu(); // Строим меню и применяем права.
             UpdateTitle();
         }
 
-        // ----------------------------------------------------------------
-        // Обработчики пунктов меню
-        // ----------------------------------------------------------------
-
-        /// <summary>Вызывается при выборе пункта «Разное».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Разное».
+        /// </summary>
         public void Others() => ShowHandler(nameof(Others));
 
-        /// <summary>Вызывается при выборе пункта «Сотрудники».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Сотрудники».
+        /// </summary>
         public void Stuff() => ShowHandler(nameof(Stuff));
 
-        /// <summary>Вызывается при выборе пункта «Приказы».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Приказы».
+        /// </summary>
         public void Orders() => ShowHandler(nameof(Orders));
 
-        /// <summary>Вызывается при выборе пункта «Документы».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Документы».
+        /// </summary>
         public void Docs() => ShowHandler(nameof(Docs));
 
-        /// <summary>Вызывается при выборе пункта «Отделы».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Отделы».
+        /// </summary>
         public void Departs() => ShowHandler(nameof(Departs));
 
-        /// <summary>Вызывается при выборе пункта «Города».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Города».
+        /// </summary>
         public void Towns() => ShowHandler(nameof(Towns));
 
-        /// <summary>Вызывается при выборе пункта «Должности».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Должности».
+        /// </summary>
         public void Posts() => ShowHandler(nameof(Posts));
 
-        /// <summary>Вызывается при выборе пункта «Окно».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Окно».
+        /// </summary>
         public void Window() => ShowHandler(nameof(Window));
 
-        /// <summary>Вызывается при выборе пункта «Оглавление».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «Оглавление».
+        /// </summary>
         public void Content() => ShowHandler(nameof(Content));
 
-        /// <summary>Вызывается при выборе пункта «О программе».</summary>
+        /// <summary>
+        /// Вызывается при выборе пункта «О программе».
+        /// </summary>
         public void About() => ShowHandler(nameof(About));
-
-        // ----------------------------------------------------------------
-        // Вспомогательные методы
-        // ----------------------------------------------------------------
 
         /// <summary>
         /// Отображает диалог авторизации.
@@ -111,8 +116,8 @@ namespace MenuDemo.Forms
         /// </returns>
         private bool ShowLoginDialog()
         {
-            // Получаем версию из атрибутов сборки.
-            string version = System.Reflection.Assembly
+            
+            string version = System.Reflection.Assembly // Получаем версию из атрибутов сборки.
                 .GetExecutingAssembly()
                 .GetName()
                 .Version?
@@ -130,10 +135,10 @@ namespace MenuDemo.Forms
             try
             {
                 var builder = new MenuBuilder("menu.txt", this);
-                builder.BuildMenu(menuStrip1); // имя из Designer
+                builder.BuildMenu(menuStrip1);
 
-                // Применяем права пользователя ко всем пунктам меню.
-                _authManager.ApplyPermissions(menuStrip1.Items);
+                
+                _authManager.ApplyPermissions(menuStrip1.Items); // Применяем права пользователя ко всем пунктам меню.
             }
             catch (Exception ex)
             {
