@@ -117,11 +117,7 @@ namespace MenuDemo.Forms
         private bool ShowLoginDialog()
         {
             
-            string version = System.Reflection.Assembly // Получаем версию из атрибутов сборки.
-                .GetExecutingAssembly()
-                .GetName()
-                .Version?
-                .ToString(3) ?? "1.0.0";
+            string version = System.Reflection.Assembly .GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0"; // Получаем версию из атрибутов сборки.
 
             using var loginForm = new LoginForm(_authManager, version);
             return loginForm.ShowDialog() == DialogResult.OK;
