@@ -26,7 +26,7 @@
 
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "Dynamic Test App";
+            this.Text = "АИС Отдел Кадров";
             this.Width = 800;
             this.Height = 600;
 

@@ -47,7 +47,6 @@ namespace MenuDemo.Forms
             
             if (!ShowLoginDialog()) // Показываем форму авторизации до появления главного окна.
             {
-                
                 Load += (s, e) => Close(); // Пользователь нажал «Отмена» — закрываем приложение.
                 return;
             }
@@ -133,7 +132,6 @@ namespace MenuDemo.Forms
                 var builder = new MenuBuilder("menu.txt", this);
                 builder.BuildMenu(menuStrip1);
 
-                
                 _authManager.ApplyPermissions(menuStrip1.Items); // Применяем права пользователя ко всем пунктам меню.
             }
             catch (Exception ex)
@@ -148,7 +146,7 @@ namespace MenuDemo.Forms
         /// </summary>
         private void UpdateTitle()
         {
-            Text = $"MenuDemo — {_authManager.CurrentUsername}";
+            Text = $"АИС Отдел Кадров ({_authManager.CurrentUsername})";
         }
 
         /// <summary>
