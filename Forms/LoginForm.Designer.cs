@@ -1,9 +1,9 @@
 ﻿namespace MenuDemo
 {
     /// <summary>
-    /// Частичный класс формы входа с динамической привязкой. Содержит код, сгенерированный дизайнером Windows Forms.
+    /// Частичный класс формы входа. Содержит код, сгенерированный дизайнером Windows Forms.
     /// </summary>
-    partial class LoginFormDynamic
+    partial class LoginForm
     {
         /// <summary>
         /// Обязательная переменная конструктора.

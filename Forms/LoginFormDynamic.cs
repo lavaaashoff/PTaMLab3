@@ -5,6 +5,11 @@ using System.Windows.Forms;
 
 namespace MenuDemo
 {
+    /// <summary>
+    /// Форма аутентификации пользователя с динамической привязкой к менеджеру авторизации.
+    /// Использует рефлексию для вызова метода Login, что позволяет работать с любой
+    /// реализацией менеджера аутентификации без прямой зависимости от конкретного типа.
+    /// </summary>
     public sealed partial class LoginFormDynamic : Form
     {
         private readonly object _auth;
@@ -15,12 +20,20 @@ namespace MenuDemo
         private ToolStripStatusLabel tsCaps;
         private ToolStripStatusLabel tsLang;
 
+        /// <summary>
+        /// Инициализирует новый экземпляр формы входа с динамической привязкой.
+        /// </summary>
+        /// <param name="auth">Экземпляр объекта аутентификации.</param>
+        /// <param name="authType">Тип объекта аутентификации для получения метода Login через рефлексию.</param>
+        /// <param name="version">Строка версии приложения, отображаемая в заголовке формы.</param>
         public LoginFormDynamic(object auth, Type authType, string version)
         {
             _auth = auth;
+
+            // Получение метода Login через рефлексию для последующего динамического вызова.
             _loginMethod = authType.GetMethod("Login");
 
-            // ─── НАСТРОЙКИ ФОРМЫ ──────────────────────────────────────
+            // Настройка основных свойств формы.
             Text = "Вход";
             Size = new Size(390, 250);
             StartPosition = FormStartPosition.CenterScreen;
@@ -28,10 +41,10 @@ namespace MenuDemo
             MaximizeBox = false;
             MinimizeBox = false;
             Font = new Font("Microsoft Sans Serif", 8.25F);
-            BackColor = Color.FromArgb(185, 209, 234); // Тот самый синий фон
+            BackColor = Color.FromArgb(185, 209, 234);
             Icon = SystemIcons.Application;
 
-            // ─── ВЕРХНЯЯ ПАНЕЛЬ ───────────────────────────────────────
+            // Верхняя панель с иконкой и информационными полосами.
             var pnlHeader = new Panel
             {
                 Dock = DockStyle.Top,
@@ -45,7 +58,7 @@ namespace MenuDemo
                 Width = 70,
                 SizeMode = PictureBoxSizeMode.CenterImage,
                 BackColor = Color.Transparent,
-                Image = global::DDProgram.Properties.Resources.KeysIcon // Раскомментируйте и добавьте иконку
+                Image = global::DDProgram.Properties.Resources.KeysIcon
             };
 
             var pnlStripes = new Panel
@@ -54,6 +67,7 @@ namespace MenuDemo
                 BackColor = Color.Transparent
             };
 
+            // Три цветовые полосы: название системы, версия, подсказка.
             var lblApp = new Label
             {
                 Text = "АИС Отдел кадров",
@@ -90,24 +104,25 @@ namespace MenuDemo
             pnlHeader.Controls.Add(pnlStripes);
             pnlHeader.Controls.Add(pbIcon);
 
-            // ─── ПОЛЯ ВВОДА (ПУСТЫЕ) ──────────────────────────────────
+            // Поля ввода учётных данных.
             var lblUser = new Label { Text = "Имя пользователя", Location = new Point(15, 85), AutoSize = true, BackColor = Color.Transparent };
             txtUser = new TextBox { Location = new Point(130, 82), Width = 230, Text = "" };
 
             var lblPass = new Label { Text = "Пароль", Location = new Point(15, 115), AutoSize = true, BackColor = Color.Transparent };
             txtPass = new TextBox { Location = new Point(130, 112), Width = 230, UseSystemPasswordChar = true, Text = "" };
 
-            // ─── КНОПКИ ──────────────────────────────────────────────
+            // Кнопки подтверждения и отмены входа.
             var btnLogin = new Button { Text = "Вход", Location = new Point(35, 150), Size = new Size(80, 24), UseVisualStyleBackColor = true };
             var btnCancel = new Button { Text = "Отмена", Location = new Point(260, 150), Size = new Size(80, 24), UseVisualStyleBackColor = true, DialogResult = DialogResult.Cancel };
 
-            // ─── STATUS BAR ──────────────────────────────────────────
+            // Строка состояния с индикаторами языка ввода и CapsLock.
             var statusStrip = new StatusStrip { BackColor = Color.Transparent, SizingGrip = false };
 
+            // Разделитель между индикатором языка и индикатором CapsLock создаётся стилем границы Etched.
             tsLang = new ToolStripStatusLabel
             {
                 BorderSides = ToolStripStatusLabelBorderSides.Right,
-                BorderStyle = Border3DStyle.Etched, // Создает ту самую белую линию-разделитель
+                BorderStyle = Border3DStyle.Etched,
                 Padding = new Padding(0, 0, 5, 0)
             };
 
@@ -118,16 +133,12 @@ namespace MenuDemo
 
             Controls.AddRange(new Control[] { lblUser, txtUser, lblPass, txtPass, btnLogin, btnCancel, pnlHeader, statusStrip });
 
-            // ─── ЛОГИКА ОБНОВЛЕНИЯ ЯЗЫКА И КЛАВИШ ─────────────────────
-
-            // 1. Обновление при загрузке
+            // Первоначальное заполнение индикаторов строки состояния.
             UpdateLanguageLabel();
             UpdateCapsLockLabel();
 
-            // 2. Отслеживание смены языка системы
+            // Подписка на события изменения языка и нажатия клавиш.
             InputLanguageChanged += (s, e) => UpdateLanguageLabel();
-
-            // 3. Отслеживание CapsLock
             KeyPreview = true;
             KeyDown += (s, e) => UpdateCapsLockLabel();
 
@@ -137,9 +148,13 @@ namespace MenuDemo
             Shown += (s, e) => txtUser.Focus();
         }
 
+        /// <summary>
+        /// Обновляет метку языка ввода в строке состояния.
+        /// Отображает «Русский» или «Английский» для соответствующих раскладок,
+        /// для остальных языков используется английское название культуры.
+        /// </summary>
         private void UpdateLanguageLabel()
         {
-            // Получаем название текущего языка (например, "Русский" или "English")
             string lang = InputLanguage.CurrentInputLanguage.Culture.Parent.EnglishName;
             if (lang.Contains("Russian")) lang = "Русский";
             else if (lang.Contains("English")) lang = "Английский";
@@ -147,11 +162,20 @@ namespace MenuDemo
             tsLang.Text = $"Язык ввода {lang}";
         }
 
+        /// <summary>
+        /// Обновляет метку состояния CapsLock в строке состояния.
+        /// </summary>
         private void UpdateCapsLockLabel()
         {
             tsCaps.Text = Control.IsKeyLocked(Keys.CapsLock) ? "Клавиша CapsLock нажата" : "";
         }
 
+        /// <summary>
+        /// Обрабатывает нажатие кнопки «Вход».
+        /// Вызывает метод Login через рефлексию. При успешной аутентификации закрывает форму
+        /// с результатом OK, при неудаче отображает сообщение об ошибке и возвращает фокус
+        /// на поле имени пользователя.
+        /// </summary>
         private void BtnLogin_Click(object sender, EventArgs e)
         {
             if ((bool)_loginMethod.Invoke(_auth, new object[] { txtUser.Text, txtPass.Text }))
