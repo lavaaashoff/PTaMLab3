@@ -1,4 +1,6 @@
-﻿/*/// <summary>
+﻿/* 
+ * Закомментировано для корректной сборки проекта, именно это содержится в dll файле/// 
+/// <summary>
 /// Библиотека классов для построения меню оконного приложения
 /// на основе данных из внешнего текстового файла.
 /// </summary>
@@ -17,8 +19,7 @@ using System.Reflection;
 namespace MenuLibraryClass
 {
     /// <summary>
-    /// Строитель меню: читает описание меню из текстового файла
-    /// и формирует объект <see cref="MenuStrip"/> для Windows Forms.
+    /// Строитель меню читает описание меню из текстового файла и формирует объект <see cref="MenuStrip"/> для Windows Forms.
     /// </summary>
     /// <remarks>
     /// Формат каждой строки файла меню:
@@ -26,32 +27,22 @@ namespace MenuLibraryClass
     ///
     /// Уровень  — целое число (0 = пункт главного меню, 1 = подпункт и т.д.).
     /// Название — отображаемый текст пункта.
-    /// ИмяМетода — необязательное имя обработчика клика; если не задано,
-    ///             пункт считается родительским и открывает подменю.
+    /// ИмяМетода — необязательное имя обработчика клика; если не задано, пункт считается родительским и открывает подменю.
     ///
     /// Пример строк:
-    ///   0 Справочники
-    ///   1 Отделы Departs
-    ///   1 Города Towns
+    /// 0 Справочники
+    /// 1 Отделы Departs
+    /// 1 Города Towns
     /// </remarks>
     public class MenuBuilder
     {
-        // ----------------------------------------------------------------
-        // Поля
-        // ----------------------------------------------------------------
-
         /// <summary>Путь к файлу с описанием меню.</summary>
         private readonly string _menuFilePath;
 
         /// <summary>
-        /// Объект-получатель вызовов обработчиков пунктов меню.
-        /// Если <c>null</c>, используется стандартный вывод через MessageBox.
+        /// Объект-получатель вызовов обработчиков пунктов меню. Если <c>null</c>, используется стандартный вывод через MessageBox.
         /// </summary>
         private readonly object? _handlerTarget;
-
-        // ----------------------------------------------------------------
-        // Конструкторы
-        // ----------------------------------------------------------------
 
         /// <summary>
         /// Инициализирует экземпляр <see cref="MenuBuilder"/>.
@@ -70,21 +61,15 @@ namespace MenuLibraryClass
         {
             if (!File.Exists(menuFilePath))
             {
-                throw new FileNotFoundException(
-                    $"Файл меню не найден: {menuFilePath}", menuFilePath);
+                throw new FileNotFoundException($"Файл меню не найден: {menuFilePath}", menuFilePath);
             }
 
             _menuFilePath = menuFilePath;
             _handlerTarget = handlerTarget;
         }
 
-        // ----------------------------------------------------------------
-        // Открытые методы
-        // ----------------------------------------------------------------
-
         /// <summary>
-        /// Читает файл меню и заполняет переданный <see cref="MenuStrip"/>
-        /// сформированными пунктами.
+        /// Читает файл меню и заполняет переданный <see cref="MenuStrip"/> сформированными пунктами.
         /// </summary>
         /// <param name="menuStrip">
         /// Элемент управления <see cref="MenuStrip"/>, который будет заполнен.
@@ -97,8 +82,7 @@ namespace MenuLibraryClass
         /// </exception>
         public void BuildMenu(System.Windows.Forms.MenuStrip menuStrip)
         {
-            if (menuStrip == null)
-                throw new ArgumentNullException(nameof(menuStrip));
+            if (menuStrip == null) throw new ArgumentNullException(nameof(menuStrip));
 
             menuStrip.Items.Clear();
 
@@ -106,13 +90,8 @@ namespace MenuLibraryClass
             BuildMenuItems(menuStrip, records);
         }
 
-        // ----------------------------------------------------------------
-        // Вспомогательные методы
-        // ----------------------------------------------------------------
-
         /// <summary>
-        /// Разбирает файл меню и возвращает список записей
-        /// <see cref="MenuRecord"/>.
+        /// Разбирает файл меню и возвращает список записей <see cref="MenuRecord"/>.
         /// </summary>
         /// <param name="filePath">Путь к файлу меню.</param>
         /// <returns>Список разобранных записей.</returns>
@@ -135,14 +114,12 @@ namespace MenuLibraryClass
 
                 if (parts.Length < 2)
                 {
-                    throw new FormatException(
-                        $"Строка {lineNumber} файла меню имеет неверный формат: «{rawLine}»");
+                    throw new FormatException($"Строка {lineNumber} файла меню имеет неверный формат: «{rawLine}»");
                 }
 
                 if (!int.TryParse(parts[0], out int level) || level < 0)
                 {
-                    throw new FormatException(
-                        $"Строка {lineNumber}: «{parts[0]}» не является корректным номером уровня.");
+                    throw new FormatException($"Строка {lineNumber}: «{parts[0]}» не является корректным номером уровня.");
                 }
 
                 string title = parts[1];
@@ -155,15 +132,13 @@ namespace MenuLibraryClass
         }
 
         /// <summary>
-        /// Рекурсивно строит иерархию <see cref="ToolStripMenuItem"/>
-        /// и добавляет корневые пункты в <paramref name="menuStrip"/>.
+        /// Рекурсивно строит иерархию <see cref="ToolStripMenuItem"/> и добавляет корневые пункты в <paramref name="menuStrip"/>.
         /// </summary>
         /// <param name="menuStrip">Целевой MenuStrip.</param>
         /// <param name="records">Плоский список разобранных записей.</param>
         private void BuildMenuItems(MenuStrip menuStrip, List<MenuRecord> records)
         {
-            // Стек хранит пары (уровень, родительский элемент меню).
-            // Используем стек для отслеживания текущего пути в иерархии.
+            // Стек хранит пары (уровень, родительский элемент меню).Используем для отслеживания текущего пути в иерархии.
             var parentStack = new Stack<(int Level, ToolStripMenuItem Item)>();
 
             foreach (MenuRecord record in records)
@@ -181,13 +156,13 @@ namespace MenuLibraryClass
                 {
                     // Поднимаемся по стеку до подходящего родителя.
                     while (parentStack.Count > 0 && parentStack.Peek().Level >= record.Level)
+                    { 
                         parentStack.Pop();
+                    }
 
                     if (parentStack.Count == 0)
                     {
-                        throw new FormatException(
-                            $"Пункт «{record.Title}» уровня {record.Level} " +
-                            "не имеет подходящего родителя.");
+                        throw new FormatException($"Пункт «{record.Title}» уровня {record.Level} " + "не имеет подходящего родителя.");
                     }
 
                     parentStack.Peek().Item.DropDownItems.Add(menuItem);
@@ -197,8 +172,7 @@ namespace MenuLibraryClass
         }
 
         /// <summary>
-        /// Создаёт <see cref="ToolStripMenuItem"/> на основе записи
-        /// <see cref="MenuRecord"/> и назначает обработчик события Click.
+        /// Создаёт <see cref="ToolStripMenuItem"/> на основе записи <see cref="MenuRecord"/> и назначает обработчик события Click.
         /// </summary>
         /// <param name="record">Запись файла меню.</param>
         /// <returns>Готовый элемент меню.</returns>
@@ -223,9 +197,7 @@ namespace MenuLibraryClass
         }
 
         /// <summary>
-        /// Вызывает метод с именем <paramref name="methodName"/> у объекта
-        /// <see cref="_handlerTarget"/> или отображает MessageBox, если
-        /// целевой объект не задан или метод не найден.
+        /// Вызывает метод с именем <paramref name="methodName"/> у объекта  <see cref="_handlerTarget"/> или отображает MessageBox, если целевой объект не задан или метод не найден.
         /// </summary>
         /// <param name="methodName">Имя метода-обработчика.</param>
         /// <param name="itemTitle">Отображаемое название пункта меню.</param>
@@ -234,9 +206,7 @@ namespace MenuLibraryClass
             if (_handlerTarget != null)
             {
                 Type targetType = _handlerTarget.GetType();
-                MethodInfo? method = targetType.GetMethod(
-                    methodName,
-                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                MethodInfo? method = targetType.GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
 
                 if (method != null)
                 {
@@ -246,16 +216,8 @@ namespace MenuLibraryClass
             }
 
             // Метод не найден или объект не задан — вывод уведомления.
-            MessageBox.Show(
-                $"Выбран пункт: {itemTitle}\nОбработчик: {methodName}",
-                "Обработчик пункта меню",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            MessageBox.Show($"Выбран пункт: {itemTitle}\nОбработчик: {methodName}", "Обработчик пункта меню", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-        // ----------------------------------------------------------------
-        // Вложенный тип
-        // ----------------------------------------------------------------
 
         /// <summary>
         /// Представляет одну разобранную запись файла меню.
@@ -268,15 +230,10 @@ namespace MenuLibraryClass
             /// <summary>Отображаемый текст пункта.</summary>
             public string Title { get; }
 
-            /// <summary>
-            /// Имя метода-обработчика клика.
-            /// <c>null</c> или пустая строка означает, что пункт открывает подменю.
-            /// </summary>
+            /// <summary> Имя метода-обработчика клика. <c>null</c> или пустая строка означает, что пункт открывает подменю. </summary>
             public string? HandlerName { get; }
 
-            /// <summary>
-            /// Инициализирует запись меню.
-            /// </summary>
+            /// <summary> Инициализирует запись меню. </summary>
             public MenuRecord(int level, string title, string? handlerName)
             {
                 Level = level;

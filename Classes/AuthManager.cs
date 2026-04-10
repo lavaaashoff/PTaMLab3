@@ -1,4 +1,6 @@
-/*/// <summary>
+/*
+ * Закомментировано для корректной сборки проекта, именно это содержится в dll файле
+/// <summary>
 /// Библиотека классов для авторизации пользователей и управления
 /// доступом к пунктам меню на основе данных из внешнего файла USERS.
 /// </summary>
@@ -107,24 +109,69 @@ namespace AuthLibraryClass
     /// </remarks>
     public class AuthManager
     {
-        // ----------------------------------------------------------------
-        // Поля
-        // ----------------------------------------------------------------
-
         /// <summary>Словарь учётных записей: ключ — имя в нижнем регистре.</summary>
-        private readonly Dictionary<string, UserAccount> _accounts
-            = new Dictionary<string, UserAccount>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, UserAccount> _accounts = new Dictionary<string, UserAccount>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>Текущий авторизованный пользователь; null — не авторизован.</summary>
         private UserAccount? _currentUser;
 
-        // ----------------------------------------------------------------
-        // Конструктор
-        // ----------------------------------------------------------------
+        /// <summary>
+        /// Читает и разбирает файл пользователей.
+        /// </summary>
+        /// <param name="filePath">Путь к файлу.</param>
+        private void ParseUsersFile(string filePath)
+        {
+            UserAccount? currentAccount = null;
+            int lineNumber = 0;
+
+            foreach (string rawLine in File.ReadLines(filePath))
+            {
+                lineNumber++;
+
+                // Пропускаем пустые строки и строки-комментарии (//).
+                string line = rawLine.Trim();
+                if (line.Length == 0 || line.StartsWith("//")) continue;
+
+                if (line.StartsWith('#'))
+                {
+                    // Новый блок пользователя: #Имя Пароль
+                    string[] parts = line.Substring(1).Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts.Length < 2)
+                    {
+                        throw new FormatException($"Строка {lineNumber}: блок пользователя должен содержать " + $"имя и пароль: «{rawLine}»");
+                    }
+
+                    currentAccount = new UserAccount(parts[0], parts[1]);
+                    _accounts[currentAccount.Username] = currentAccount;
+                }
+                else
+                {
+                    // Строка прав: Название_пункта Статус
+                    if (currentAccount == null)
+                    {
+                        throw new FormatException($"Строка {lineNumber}: запись прав без блока пользователя: " + $"«{rawLine}»");
+                    }
+
+                    string[] parts = line.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts.Length < 2)
+                    {
+                        throw new FormatException($"Строка {lineNumber}: запись прав должна содержать " + $"название пункта и статус: «{rawLine}»");
+                    }
+
+                    if (!int.TryParse(parts[1], out int statusCode) || statusCode < 0 || statusCode > 2)
+                    {
+                        throw new FormatException($"Строка {lineNumber}: статус «{parts[1]}» должен быть " + "числом 0, 1 или 2.");
+                    }
+
+                    currentAccount.Rules[parts[0]] = (MenuItemStatus)statusCode;
+                }
+            }
+        }
 
         /// <summary>
-        /// Инициализирует экземпляр <see cref="AuthManager"/> и загружает
-        /// данные из файла пользователей.
+        /// Инициализирует экземпляр <see cref="AuthManager"/> и загружает данные из файла пользователей.
         /// </summary>
         /// <param name="usersFilePath">
         /// Путь к файлу пользователей. По умолчанию «users.txt».
@@ -139,16 +186,11 @@ namespace AuthLibraryClass
         {
             if (!File.Exists(usersFilePath))
             {
-                throw new FileNotFoundException(
-                    $"Файл пользователей не найден: {usersFilePath}", usersFilePath);
+                throw new FileNotFoundException($"Файл пользователей не найден: {usersFilePath}", usersFilePath);
             }
 
             ParseUsersFile(usersFilePath);
         }
-
-        // ----------------------------------------------------------------
-        // Открытые свойства
-        // ----------------------------------------------------------------
 
         /// <summary>
         /// Возвращает имя текущего авторизованного пользователя
@@ -161,10 +203,6 @@ namespace AuthLibraryClass
         /// </summary>
         public bool IsAuthenticated => _currentUser != null;
 
-        // ----------------------------------------------------------------
-        // Открытые методы
-        // ----------------------------------------------------------------
-
         /// <summary>
         /// Проверяет учётные данные и, если они корректны, устанавливает
         /// текущего пользователя.
@@ -176,8 +214,7 @@ namespace AuthLibraryClass
         /// </returns>
         public bool Login(string username, string password)
         {
-            if (_accounts.TryGetValue(username, out UserAccount? account)
-                && account.Password == password)
+            if (_accounts.TryGetValue(username, out UserAccount? account) && account.Password == password)
             {
                 _currentUser = account;
                 return true;
@@ -205,13 +242,11 @@ namespace AuthLibraryClass
         /// </returns>
         public MenuItemStatus GetItemStatus(string itemTitle)
         {
-            if (_currentUser == null)
-                return MenuItemStatus.VisibleEnabled;
+            if (_currentUser == null) return MenuItemStatus.VisibleEnabled;
 
-            if (_currentUser.Rules.TryGetValue(itemTitle, out MenuItemStatus status))
-                return status;
+            if (_currentUser.Rules.TryGetValue(itemTitle, out MenuItemStatus status)) return status;
 
-            // Пункт не упомянут — по умолчанию виден и доступен.
+            // Пункт не упомянут по умолчанию виден и доступен.
             return MenuItemStatus.VisibleEnabled;
         }
 
@@ -249,81 +284,9 @@ namespace AuthLibraryClass
                 }
 
                 // Рекурсивно обрабатываем подпункты.
-                if (item is System.Windows.Forms.ToolStripMenuItem menuItem
-                    && menuItem.DropDownItems.Count > 0)
+                if (item is System.Windows.Forms.ToolStripMenuItem menuItem && menuItem.DropDownItems.Count > 0)
                 {
                     ApplyPermissions(menuItem.DropDownItems);
-                }
-            }
-        }
-
-        // ----------------------------------------------------------------
-        // Вспомогательные методы
-        // ----------------------------------------------------------------
-
-        /// <summary>
-        /// Читает и разбирает файл пользователей.
-        /// </summary>
-        /// <param name="filePath">Путь к файлу.</param>
-        private void ParseUsersFile(string filePath)
-        {
-            UserAccount? currentAccount = null;
-            int lineNumber = 0;
-
-            foreach (string rawLine in File.ReadLines(filePath))
-            {
-                lineNumber++;
-
-                // Пропускаем пустые строки и строки-комментарии (//).
-                string line = rawLine.Trim();
-                if (line.Length == 0 || line.StartsWith("//"))
-                    continue;
-
-                if (line.StartsWith('#'))
-                {
-                    // Новый блок пользователя: #Имя Пароль
-                    string[] parts = line.Substring(1).Split(' ', 2,
-                        StringSplitOptions.RemoveEmptyEntries);
-
-                    if (parts.Length < 2)
-                    {
-                        throw new FormatException(
-                            $"Строка {lineNumber}: блок пользователя должен содержать " +
-                            $"имя и пароль: «{rawLine}»");
-                    }
-
-                    currentAccount = new UserAccount(parts[0], parts[1]);
-                    _accounts[currentAccount.Username] = currentAccount;
-                }
-                else
-                {
-                    // Строка прав: Название_пункта Статус
-                    if (currentAccount == null)
-                    {
-                        throw new FormatException(
-                            $"Строка {lineNumber}: запись прав без блока пользователя: " +
-                            $"«{rawLine}»");
-                    }
-
-                    string[] parts = line.Split(' ', 2,
-                        StringSplitOptions.RemoveEmptyEntries);
-
-                    if (parts.Length < 2)
-                    {
-                        throw new FormatException(
-                            $"Строка {lineNumber}: запись прав должна содержать " +
-                            $"название пункта и статус: «{rawLine}»");
-                    }
-
-                    if (!int.TryParse(parts[1], out int statusCode)
-                        || statusCode < 0 || statusCode > 2)
-                    {
-                        throw new FormatException(
-                            $"Строка {lineNumber}: статус «{parts[1]}» должен быть " +
-                            "числом 0, 1 или 2.");
-                    }
-
-                    currentAccount.Rules[parts[0]] = (MenuItemStatus)statusCode;
                 }
             }
         }
